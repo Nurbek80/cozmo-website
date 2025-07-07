@@ -1,0 +1,7 @@
+pycozmo
+requests
+Pillow
+numpy
+TTS
+fastapi
+pydantic
