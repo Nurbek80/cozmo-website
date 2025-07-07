@@ -3,6 +3,7 @@ brew update
 brew install pyenv
 
 pyenv install 3.10.13
+
 pyenv virtualenv 3.10.13 myproject-env
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
