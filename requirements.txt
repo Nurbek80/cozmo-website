@@ -5,3 +5,5 @@ numpy
 TTS
 fastapi
 pydantic
+uvicorn
+python-multipart
