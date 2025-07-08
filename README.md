@@ -5,6 +5,8 @@ brew update
 
 brew install pyenv
 
+brew install ffmpeg
+
 pyenv install 3.10.13
 
 pyenv virtualenv 3.10.13 myproject-env
