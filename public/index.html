@@ -252,7 +252,13 @@ turn left
 say Hello!
 celebrate
 stop</textarea>
-            <button class="run-btn" onclick="runSequence()">▶️ Run My Program!</button>
+
+            <div style="display: flex; gap: 14px; align-items: center;">
+              <button class="run-btn" id="run-btn" onclick="runSequence()">▶️ Run My Program!</button>
+              <button class="run-btn" id="stop-btn" style="background:linear-gradient(90deg,#fa3c56 0%,#fdba00 100%);color:#fff;" onclick="stopSequence()">⏹ Stop</button>
+            </div>
+
+
         </div>
         <div class="output-bar" id="tutorial-status">Ready to play!</div>
         <div class="summary-bar" id="command-summary">
@@ -409,6 +415,58 @@ stop</textarea>
     document.getElementById('sequence-input').addEventListener('input', updateCommandSummary);
     // Initialize at load
     updateCommandSummary();
+
+    let stopRequested = false;
+    async function runSequence() {
+        stopRequested = false;
+        const runBtn = document.getElementById('run-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        runBtn.disabled = true;
+        stopBtn.disabled = false;
+
+        const rawLines = document.getElementById("sequence-input").value.split("\n");
+        const lines = parseCommands(rawLines);
+        const status = document.getElementById("tutorial-status");
+        if (lines.length === 0) {
+            status.innerText = "Please enter at least one command.";
+            runBtn.disabled = false;
+            stopBtn.disabled = true;
+            return;
+        }
+        status.innerText = "⏳ Cozmo is following your plan...";
+        for (let cmd of lines) {
+            if (stopRequested) {
+                status.innerText = "⏹️ Stopped by user!";
+                break;
+            }
+            status.innerText = `👉 Sending: ${cmd}`;
+            try {
+                const resp = await fetch("/command", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ command: cmd })
+                });
+                let data = {};
+                try { data = await resp.json(); } catch {}
+                if (data.status) status.innerText = data.status;
+            } catch (err) {
+                status.innerText = "⚠️ Network error!";
+                break;
+            }
+            await new Promise(res => setTimeout(res, 1600));
+        }
+        runBtn.disabled = false;
+        stopBtn.disabled = true;
+        if (!stopRequested) status.innerText = "✅ Hooray! Cozmo finished your program!";
+    }
+
+    function stopSequence() {
+        stopRequested = true;
+        document.getElementById('stop-btn').disabled = true;
+        // Also stop the robot immediately
+        sendCmd("stop");
+    }
+
 </script>
 </body>
 </html>
