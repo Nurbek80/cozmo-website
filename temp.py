@@ -383,5 +383,5 @@ class CozmoEasy:
             for _ in range(int(rate * hold)):
                 timer.sleep()
 '''
-#ELEVENLABS_API_KEY = "sk_3ba60f2aa702b86eb745688991df2834b8494609ef871652"
-#VOICE_ID = "iq1GS1mcjc63xtqTrsFh"
+#ELEVENLABS_API_KEY = ""
+#VOICE_ID = ""
